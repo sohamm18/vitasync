@@ -1,0 +1,15 @@
+@import './fonts.css';
+/* We import theme first to define variables */
+@import './theme.css';
+@import './tailwind.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Clean default font settings */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}

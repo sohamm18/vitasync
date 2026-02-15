@@ -1,0 +1,103 @@
+:root {
+  --font-size: 16px;
+  
+  /* 👇 Background set to Light Aqua Mist */
+  --background: #eaf7f4; 
+  --foreground: #020817;
+  
+  --card: #eaf7f4;
+  --card-foreground: #020817;
+  --popover: #eaf7f4;
+  --popover-foreground: #020817;
+
+  /* 👇 Primary color set to Professional Mint */
+  --primary: #3eb489; 
+  --primary-foreground: #eaf7f4;
+  
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  
+  --destructive: #ef4444;
+  --destructive-foreground: #eaf7f4;
+
+  /* Updated border and ring to match Mint theme */
+  --border: #d1e2dd;
+  --input: #d1e2dd;
+  --input-background: #f8fafc;
+  --ring: #3eb489;
+  --radius: 0.5rem;
+  
+  /* Sidebar variables adjusted for Aqua/Mint */
+  --sidebar: #f0f9f7;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #3eb489;
+  --sidebar-primary-foreground: #eaf7f4;
+  --sidebar-accent: #e1efeb;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #d1e2dd;
+  --sidebar-ring: #3eb489;
+}
+
+/* Maintain dark mode variables as they were or adjust slightly for harmony */
+.dark {
+  --background: #020817;
+  --foreground: #f8fafc;
+  --primary: #3eb489;
+  --ring: #3eb489;
+  /* ... rest of dark mode stays same ... */
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.dark {
+  --background: #020817;
+  --foreground: #f8fafc;
+  --card: #020817;
+  --card-foreground: #f8fafc;
+  --popover: #020817;
+  --popover-foreground: #f8fafc;
+  --primary: #eaf7f4;
+  --primary-foreground: #0f172a;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #f8fafc;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #3eb489;
+  
+  --sidebar: #020817;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #eaf7f4;
+  --sidebar-primary-foreground: #eaf7f4;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #3eb489;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
