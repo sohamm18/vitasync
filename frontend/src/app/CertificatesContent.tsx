@@ -126,7 +126,7 @@ export default function CertificatesContent() {
                         <option value="female">Female</option>
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
-                        Pronoun will be: {pronounCap}/{pronoun}/{possessive}/{object}
+                        Pronoun will be: {pronounCap}/{object}
                       </p>
                     </div>
                     <div className="space-y-2">

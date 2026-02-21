@@ -171,7 +171,7 @@ export default function PatientDetailsContent() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 italic leading-tight">Clinical Parameters</h2>
-          <p className="text-sm text-gray-500 font-medium mt-1">Capture findings for Dr. Ajit's current session</p>
+          <p className="text-sm text-gray-500 font-medium mt-1"> Findings for the Patient</p>
         </div>
 
         <div className="flex bg-white p-1 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -262,8 +262,8 @@ export default function PatientDetailsContent() {
           {/* RANK 3: CAUSE OF VISIT / COMPLAINTS */}
           <div onClick={() => toggleSection('complaints')} className={sectionHeader}>
             <Label className="text-base font-bold text-black flex items-center gap-3 cursor-pointer uppercase tracking-wider text-xs">
-              <Activity size={20} className="text-red-500" /> 3. Cause of Visit / Complaints
-            </Label>
+              <Activity size={0} className="text-red-500" />3. Cause of Visit / Complaints
+            </Label>  
             <div className="flex items-center gap-4">
               {formData.complaints && <CheckCircle2 size={16} className="text-green-500" />}
               {openSections.complaints ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
@@ -282,7 +282,7 @@ export default function PatientDetailsContent() {
 
           {/* RANK 4: SYSTEMIC EXAMINATION (Provisional Diagnosis Removed) */}
           <div onClick={() => toggleSection('systemic')} className={sectionHeader}>
-            <h3 className={headerStyle}>4. Systemic Examination (CNS, RS, P/A)</h3>
+            <h3 className={headerStyle}>4. Examination (CNS, RS, P/A)</h3>
             {openSections.systemic ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
           </div>
           {openSections.systemic && (

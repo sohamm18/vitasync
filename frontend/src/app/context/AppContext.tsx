@@ -88,7 +88,7 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
 const defaultDoctorProfile: DoctorProfile = {
   firstName: 'Dr. Ajit',
   lastName: 'Vispute',
-  email: 'dr.rajesh@clinic.com',
+  email: 'saisamarth@gmail.com',
   mobile: '+91 96232 89615',
   landline: '+',
   designation: 'B.A.M.S (MUHS,Nashik; AHERF, MUHS)',
