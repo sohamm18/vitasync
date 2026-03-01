@@ -39,27 +39,33 @@ export default function CertificatesContent() {
     window.print();
   };
 
+  // Shared generic input style
+  const inputStyle = "bg-white border border-green-600 text-gray-600 focus-visible:ring-1 focus-visible:ring-green-600 focus-visible:ring-offset-0 focus:outline-none placeholder:text-gray-400";
+  const cardStyle = "border-green-600 shadow-sm bg-white";
+
   return (
     <div>
       <div className="mb-6 no-print">
-        <h2 className="text-3xl font-semibold text-gray-900">Medical Certificates</h2>
-        <p className="text-gray-600 mt-1">Issue fitness and unfitness certificates</p>
+        <h2 className="text-3xl font-semibold text-gray-600">Medical Certificates</h2>
+        <p className="text-gray-500 mt-1">Issue fitness and unfitness certificates</p>
       </div>
 
       {!showPreview ? (
         <>
           {/* Certificate Type Selection */}
-          <Card className="mb-6">
+          <Card className={`mb-6 ${cardStyle}`}>
             <CardHeader>
-              <CardTitle>Certificate Type</CardTitle>
-              <CardDescription>Select the type of certificate to generate</CardDescription>
+              <CardTitle className="text-gray-600">Certificate Type</CardTitle>
+              <CardDescription className="text-gray-500">Select the type of certificate to generate</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex gap-4">
                 <Button
                   variant={certificateType === 'fitness' ? 'default' : 'outline'}
                   onClick={() => setCertificateType('fitness')}
-                  className={certificateType === 'fitness' ? 'bg-green-600 hover:bg-green-700' : ''}
+                  className={certificateType === 'fitness' 
+                    ? 'bg-green-600 hover:bg-green-700 text-white font-bold' 
+                    : 'bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold'}
                 >
                   <Award className="w-4 h-4 mr-2" />
                   Fitness Certificate
@@ -67,7 +73,9 @@ export default function CertificatesContent() {
                 <Button
                   variant={certificateType === 'unfitness' ? 'default' : 'outline'}
                   onClick={() => setCertificateType('unfitness')}
-                  className={certificateType === 'unfitness' ? 'bg-red-600 hover:bg-red-700' : ''}
+                  className={certificateType === 'unfitness' 
+                    ? 'bg-green-600 hover:bg-green-700 text-white font-bold' 
+                    : 'bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold'}
                 >
                   <Award className="w-4 h-4 mr-2" />
                   Unfitness Certificate
@@ -77,12 +85,12 @@ export default function CertificatesContent() {
           </Card>
 
           {/* Certificate Form */}
-          <Card>
+          <Card className={cardStyle}>
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="text-gray-600">
                 {certificateType === 'fitness' ? 'Fitness' : 'Unfitness'} Certificate Details
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-500">
                 Fill in the patient information and examination details
               </CardDescription>
             </CardHeader>
@@ -90,20 +98,21 @@ export default function CertificatesContent() {
               <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handlePreview(); }}>
                 {/* Patient Information */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Patient Information</h3>
+                  <h3 className="text-sm font-semibold text-gray-600 mb-3">Patient Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="certPatientName">Patient Name *</Label>
+                      <Label htmlFor="certPatientName" className="text-gray-600">Patient Name *</Label>
                       <Input
                         id="certPatientName"
                         placeholder="Enter patient full name"
                         value={patientName}
                         onChange={(e: any) => setPatientName(e.target.value)}
                         required
+                        className={inputStyle}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="certAge">Age *</Label>
+                      <Label htmlFor="certAge" className="text-gray-600">Age *</Label>
                       <Input
                         id="certAge"
                         type="number"
@@ -111,13 +120,14 @@ export default function CertificatesContent() {
                         value={age}
                         onChange={(e: any) => setAge(e.target.value)}
                         required
+                        className={inputStyle}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="certGender">Gender *</Label>
+                      <Label htmlFor="certGender" className="text-gray-600">Gender *</Label>
                       <select
                         id="certGender"
-                        className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`w-full h-10 px-3 rounded-lg ${inputStyle}`}
                         value={gender}
                         onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                         required
@@ -125,17 +135,18 @@ export default function CertificatesContent() {
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Pronoun will be: {pronounCap}/{object}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="examDate">Examination Date</Label>
+                      <Label htmlFor="examDate" className="text-gray-600">Examination Date</Label>
                       <Input
                         id="examDate"
                         type="date"
                         value={examDate}
                         onChange={(e: any) => setExamDate(e.target.value)}
+                        className={inputStyle}
                       />
                     </div>
                   </div>
@@ -143,69 +154,72 @@ export default function CertificatesContent() {
 
                 {/* Certificate Specific Fields */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Certificate Details</h3>
+                  <h3 className="text-sm font-semibold text-gray-600 mb-3">Certificate Details</h3>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="purpose">Purpose of Certificate</Label>
+                      <Label htmlFor="purpose" className="text-gray-600">Purpose of Certificate</Label>
                       <Input
                         id="purpose"
                         placeholder="e.g., Employment, Sports, Travel, etc."
                         value={purpose}
                         onChange={(e: any) => setPurpose(e.target.value)}
+                        className={inputStyle}
                       />
                     </div>
 
                     {certificateType === 'fitness' ? (
                       <>
                         <div className="space-y-2">
-                          <Label htmlFor="findings">Examination Findings</Label>
+                          <Label htmlFor="findings" className="text-gray-600">Examination Findings</Label>
                           <textarea
                             id="findings"
-                            className="w-full min-h-24 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full min-h-24 p-3 rounded-lg ${inputStyle}`}
                             placeholder="Enter examination findings (e.g., General physical examination within normal limits...)"
                             value={findings}
                             onChange={(e) => setFindings(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="validUntil">Valid Until</Label>
+                          <Label htmlFor="validUntil" className="text-gray-600">Valid Until</Label>
                           <Input
                             id="validUntil"
                             type="date"
                             value={validUntil}
                             onChange={(e: any) => setValidUntil(e.target.value)}
+                            className={inputStyle}
                           />
                         </div>
                       </>
                     ) : (
                       <>
                         <div className="space-y-2">
-                          <Label htmlFor="findings">Medical Condition/Findings</Label>
+                          <Label htmlFor="findings" className="text-gray-600">Medical Condition/Findings</Label>
                           <textarea
                             id="findings"
-                            className="w-full min-h-24 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full min-h-24 p-3 rounded-lg ${inputStyle}`}
                             placeholder="Enter medical condition or findings that make the patient unfit..."
                             value={findings}
                             onChange={(e) => setFindings(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="recommendation">Recommendations</Label>
+                          <Label htmlFor="recommendation" className="text-gray-600">Recommendations</Label>
                           <textarea
                             id="recommendation"
-                            className="w-full min-h-24 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`w-full min-h-24 p-3 rounded-lg ${inputStyle}`}
                             placeholder="Enter recommendations (e.g., Rest advised for X days, Follow-up required, etc.)"
                             value={recommendation}
                             onChange={(e) => setRecommendation(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="validUntil">Unfit Until (Optional)</Label>
+                          <Label htmlFor="validUntil" className="text-gray-600">Unfit Until (Optional)</Label>
                           <Input
                             id="validUntil"
                             type="date"
                             value={validUntil}
                             onChange={(e: any) => setValidUntil(e.target.value)}
+                            className={inputStyle}
                           />
                         </div>
                       </>
@@ -214,19 +228,26 @@ export default function CertificatesContent() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                  <Button 
+                    type="submit" 
+                    className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold transition-all"
+                  >
                     <Award className="w-4 h-4 mr-2" />
                     Preview Certificate
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => {
-                    setPatientName('');
-                    setAge('');
-                    setGender('male');
-                    setPurpose('');
-                    setFindings('');
-                    setRecommendation('');
-                    setValidUntil('');
-                  }}>
+                  <Button 
+                    type="button" 
+                    className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold transition-all"
+                    onClick={() => {
+                      setPatientName('');
+                      setAge('');
+                      setGender('male');
+                      setPurpose('');
+                      setFindings('');
+                      setRecommendation('');
+                      setValidUntil('');
+                    }}
+                  >
                     Clear Form
                   </Button>
                 </div>
@@ -238,22 +259,31 @@ export default function CertificatesContent() {
         <>
           {/* Action Buttons - Shown above preview */}
           <div className="flex gap-3 justify-center mb-6 no-print">
-            <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              onClick={handlePrint} 
+              className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold px-8 h-12 transition-all"
+            >
               Print / Download Certificate
             </Button>
-            <Button variant="outline" onClick={() => setShowPreview(false)}>
+            <Button 
+              className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold px-8 h-12 transition-all"
+              onClick={() => setShowPreview(false)}
+            >
               Edit Certificate
             </Button>
-            <Button variant="outline" onClick={() => {
-              setShowPreview(false);
-              setPatientName('');
-              setAge('');
-              setGender('male');
-              setPurpose('');
-              setFindings('');
-              setRecommendation('');
-              setValidUntil('');
-            }}>
+            <Button 
+              className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold px-8 h-12 transition-all"
+              onClick={() => {
+                setShowPreview(false);
+                setPatientName('');
+                setAge('');
+                setGender('male');
+                setPurpose('');
+                setFindings('');
+                setRecommendation('');
+                setValidUntil('');
+              }}
+            >
               Create New
             </Button>
           </div>
@@ -263,8 +293,8 @@ export default function CertificatesContent() {
             <div className="certificate-page bg-white" id="certificate-preview">
               {/* Certificate Header */}
               <div className="text-center border-b-2 border-gray-300 pb-4 mb-6">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Activity className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 border border-gray-200">
+                  <Activity className="w-8 h-8 text-gray-600" />
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-1">{doctorProfile.firstName} {doctorProfile.lastName}</h1>
                 <p className="text-sm text-gray-600">{doctorProfile.designation}</p>
@@ -300,7 +330,7 @@ export default function CertificatesContent() {
                       {pronounCap} is fit to {purpose ? purpose.toLowerCase() : 'undertake normal activities'} and there are no medical contraindications or abnormalities observed during the physical examination.
                     </p>
                     {validUntil && (
-                      <p className="bg-green-50 p-3 rounded-lg border border-green-200 text-sm">
+                      <p className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
                         <strong>Valid Until:</strong> {new Date(validUntil).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </p>
                     )}
@@ -311,13 +341,13 @@ export default function CertificatesContent() {
                       After thorough clinical examination on {new Date(examDate).toLocaleDateString('en-IN')}, I hereby certify that {pronoun} is currently medically UNFIT.
                     </p>
                     {findings && (
-                      <div className="bg-red-50 p-3 rounded-lg border border-red-200 text-sm">
+                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
                         <p><strong>Medical Findings (चिकित्सा निष्कर्ष):</strong></p>
                         <p className="mt-1">{findings}</p>
                       </div>
                     )}
                     {recommendation && (
-                      <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm">
+                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
                         <p><strong>Medical Advice (चिकित्सा सलाह):</strong></p>
                         <p className="mt-1">{recommendation}</p>
                       </div>
@@ -353,10 +383,10 @@ export default function CertificatesContent() {
 
               {/* Footer with Clinic Details */}
               <div className="certificate-footer">
-                <div className="border-t-2 border-blue-600 pt-3">
+                <div className="border-t-2 border-gray-400 pt-3">
                   <div className="text-center">
-                    <h3 className="text-sm font-bold text-blue-600 mb-2">{doctorProfile.clinicName}</h3>
-                    <div className="text-xs text-gray-700 space-y-1">
+                    <h3 className="text-sm font-bold text-gray-800 mb-2">{doctorProfile.clinicName}</h3>
+                    <div className="text-xs text-gray-600 space-y-1">
                       <p className="flex items-center justify-center gap-1">
                         <MapPin className="w-3 h-3" />
                         {doctorProfile.clinicAddress}, {doctorProfile.clinicCity}, {doctorProfile.clinicState} - {doctorProfile.clinicZip}

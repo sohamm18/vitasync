@@ -12,7 +12,8 @@ import {
   Info,
   LogOut,
   ChevronDown,
-  UserCircle
+  UserCircle,
+  X 
 } from 'lucide-react';
 
 // 👇 Relative imports
@@ -23,12 +24,10 @@ import CertificatesContent from './CertificatesContent';
 import { useAppContext } from './context/AppContext';
 import RegisterPatientModal from './RegisterPatientModal';
 
-
-
-// Real Componentsimport { useAppContext } from './context/AppContext'; // 👈 Import this
 import FinanceContent from './FinanceContent';
 import VaccineContent from './VaccineContent'; 
 import GlobalPatientSearch from './components/GlobalPatientSearch';
+import BillsContent from './BillsContent';
 
 // Settings Modal and Patient Content
 import SettingsModal from './SettingsModal';
@@ -87,21 +86,21 @@ export default function Dashboard() {
     
     if (!activePatient && patientTabs.includes(activeTab)) {
       return (
-        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-3xl border-2 border-dashed border-gray-200 mt-4">
-           <Search size={48} className="text-gray-200 mb-4" />
-           <h3 className="text-xl font-bold text-gray-800">No Patient Selected</h3>
+        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-3xl border border-green-600 mt-4">
+           <Search size={48} className="text-gray-400 mb-4" />
+           <h3 className="text-xl font-bold text-gray-600">No Patient Selected</h3>
            <p className="text-gray-500 mb-8 text-center max-w-sm">
              Please use the search bar above to find a patient by ID or Mobile Number before accessing this tab.
            </p>
            <div className="flex gap-4">
              <button 
                onClick={() => setIsRegModalOpen(true)} 
-               className="px-8 py-3 bg-white border-2 border-[#3eb489] text-black rounded-xl font-bold hover:bg-[#eaf7f4] transition-all"
+               className="px-8 py-3 bg-white border border-green-600 text-gray-600 rounded-xl font-bold hover:bg-green-50 transition-all"
              >
                Register New
              </button>
              <button 
-               className="px-8 py-3 bg-white border-2 border-[#3eb489] text-black rounded-xl font-bold hover:bg-[#eaf7f4] transition-all"
+               className="px-8 py-3 bg-white border border-green-600 text-gray-600 rounded-xl font-bold hover:bg-green-50 transition-all"
                onClick={() => document.getElementById('global-search-input')?.focus()}
              >
                Existing
@@ -226,8 +225,32 @@ export default function Dashboard() {
       <main className="flex-1 overflow-auto bg-[#f8fafc]">
         <div className="p-8 max-w-[1600px] mx-auto">
           
-          {/* Global Search Component */}
-          <GlobalPatientSearch /> 
+          {/* 👇 Global Patient Card (Fixed Styling) 👇 */}
+          {!activePatient ? (
+            <GlobalPatientSearch /> 
+          ) : (
+            <div className="bg-white border border-green-600 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm relative">
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl font-bold text-gray-600">{activePatient.name}</h2>
+                <span className="bg-white border border-green-600 text-gray-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                  ID: {activePatient.id}
+                </span>
+              </div>
+              <p className="text-gray-500 font-medium mt-2 flex items-center justify-center gap-3">
+                <span>{activePatient.phone || 'N/A'}</span>
+                <span className="text-gray-300">•</span>
+                <span>{activePatient.gender || 'Male'}, {activePatient.age || '--'}</span>
+                <span className="text-gray-300">•</span>
+                <span>{activePatient.weight || '--'}</span>
+              </p>
+              <button 
+                className="mt-4 px-4 py-2 bg-white border border-green-600 text-gray-600 rounded-lg hover:bg-green-50 font-bold flex items-center transition-all active:scale-[0.99]"
+                onClick={() => setActivePatient(null)}
+              >
+                Change Patient <X className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <div className="mt-8">
             {renderContent()}
@@ -249,25 +272,6 @@ export default function Dashboard() {
           setActivePatient(newPatient); // Logic to select newly created patient
         }}
       />
-    </div>
-  );
-}
-
-// Sub-component for Bills (Restored full layout)
-function BillsContent() {
-  return (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h2 className="text-3xl font-semibold text-gray-900">Bills Management</h2>
-        <p className="text-gray-600 mt-1">Manage billing and invoices for active patients</p>
-      </div>
-      <Card className="border-none shadow-sm">
-        <CardContent className="p-12 text-center">
-          <Receipt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-800">No Invoices Found</h3>
-          <p className="text-gray-600">Bills management content will be displayed here once data is available.</p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

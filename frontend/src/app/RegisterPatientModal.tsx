@@ -22,7 +22,7 @@ export default function RegisterPatientModal({ isOpen, onClose, onRegister }: {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-[#ffffe3] border-[#3eb489]/20">
+      <DialogContent className="sm:max-w-[425px] bg-white border-[#3eb489]/20">
         <div className="flex items-center justify-between mb-4">
           <DialogTitle className="text-xl font-bold text-[#3eb489] flex items-center gap-2">
             <UserPlus size={20} /> Quick Register
@@ -32,17 +32,17 @@ export default function RegisterPatientModal({ isOpen, onClose, onRegister }: {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <Label>Patient Full Name</Label>
-            <Input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+            <Input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="border border-green-600 focus-visible:ring-1 focus-visible:ring-green-600 focus-visible:ring-offset-0" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <Label>Mobile Number</Label>
-              <Input required type="tel" value={formData.mobile} onChange={(e) => setFormData({...formData, mobile: e.target.value})} />
+              <Input required type="tel" value={formData.mobile} onChange={(e) => setFormData({...formData, mobile: e.target.value})} className="border border-green-600 focus-visible:ring-1 focus-visible:ring-green-600 focus-visible:ring-offset-0" />
             </div>
             <div className="space-y-1">
               <Label>Gender</Label>
               <select 
-                className="flex h-9 w-full rounded-md border border-input bg-white px-3 py-1 text-sm"
+                className="flex h-9 w-full rounded-md border border-green-600 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                 value={formData.gender}
                 onChange={(e) => setFormData({...formData, gender: e.target.value})}
               >
@@ -51,7 +51,7 @@ export default function RegisterPatientModal({ isOpen, onClose, onRegister }: {
               </select>
             </div>
           </div>
-          <Button type="submit" className="w-full bg-[#3eb489] hover:bg-[#2d8a6b] text-white">
+          <Button type="submit" className="w-full bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]">
             Register & Select Patient
           </Button>
         </form>

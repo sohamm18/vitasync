@@ -48,13 +48,14 @@ export default function PrescriptionContent() {
   const [workflowStep, setWorkflowStep] = useState<WorkflowStep>('patient-selection');
   const [isSaving, setIsSaving] = useState(false);
 
-  // 3. Form Data State (Removed causeOfVisit)
+  // 3. Form Data State 
   const [diagnosis, setDiagnosis] = useState('');
   const [medications, setMedications] = useState<MedicationEntry[]>([]);
+  const [nextVisitDate, setNextVisitDate] = useState('');
 
-  // 4. Styles - Standard Grey/Black Theme
-  const inputStyle = "bg-white border border-gray-300 focus:border-gray-500 focus:ring-0 focus:outline-none placeholder:text-gray-300 transition-colors text-black";
-  const labelStyle = "text-black font-bold text-sm mb-1 block";
+  // 4. Styles 
+  const inputStyle = "bg-white border border-green-600 text-gray-600 focus-visible:ring-1 focus-visible:ring-green-600 focus-visible:ring-offset-0 focus:outline-none placeholder:text-gray-400 transition-colors";
+  const labelStyle = "text-gray-600 font-bold text-sm mb-1 block";
 
   // --- Side Effects ---
 
@@ -71,17 +72,16 @@ export default function PrescriptionContent() {
   const handleSaveToDatabase = async () => {
     setIsSaving(true);
     
-    // Prepare the payload for your PHP backend (Removed cause)
     const prescriptionSaveData = {
       patient_id: activePatient?.id,
       doctor_id: doctorProfile.employeeId,
       diagnosis: diagnosis,
       meds: medications,
+      next_visit_date: nextVisitDate,
       date: new Date().toISOString().split('T')[0]
     };
 
     try {
-      // Endpoint for your vitasync application
       const response = await fetch('http://localhost/vitasync/api/save_prescription.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -124,20 +124,17 @@ export default function PrescriptionContent() {
     );
   };
 
-  // --- Render Sections ---
-
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
       
       {/* SECTION 1: SELECTION SCREEN */}
       {workflowStep === 'patient-selection' && (
-        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-           <Search size={64} className="text-gray-200 mb-6" />
-           <h3 className="text-2xl font-bold text-gray-900">Patient Search Required</h3>
-           <p className="text-gray-400 mt-2 mb-8">Please select a patient from the top search bar to begin the consultation.</p>
+        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-2xl border border-green-600">
+           <Search size={64} className="text-green-600 mb-6" />
+           <h3 className="text-2xl font-bold text-gray-600">Patient Search Required</h3>
+           <p className="text-gray-500 mt-2 mb-8">Please select a patient from the top search bar to begin the consultation.</p>
            <Button 
-            variant="outline" 
-            className="border-gray-300 h-12 px-8 font-bold"
+            className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 h-12 px-8 font-bold"
             onClick={() => document.getElementById('global-search-input')?.focus()}
            >
              Focus Search Bar
@@ -149,35 +146,13 @@ export default function PrescriptionContent() {
       {workflowStep === 'consultation' && activePatient && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
           
-          {/* Patient Quick Info Header */}
-          <div className="bg-gray-100 border border-gray-200 rounded-2xl p-6 flex items-center justify-between no-print shadow-sm">
-            <div>
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold text-black">{activePatient.name}</h2>
-                <span className="bg-white border border-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                  ID: {activePatient.id}
-                </span>
-              </div>
-              <p className="text-gray-500 font-medium mt-1">
-                {activePatient.age} Yrs • {activePatient.gender} • {activePatient.phone}
-              </p>
-            </div>
-            <Button 
-              variant="ghost" 
-              className="text-gray-400 hover:text-red-600 hover:bg-white border border-transparent hover:border-gray-200"
-              onClick={() => setActivePatient(null)}
-            >
-              <X className="mr-2 h-4 w-4" /> Change Patient
-            </Button>
-          </div>
-
-          <Card className="border-gray-200 shadow-sm overflow-hidden">
+          <Card className="border-green-600 shadow-sm overflow-hidden bg-white">
             <CardContent className="p-8 space-y-8">
               
-              {/* Diagnosis Row (Expanded to full width since Cause of Visit is gone) */}
+              {/* Diagnosis Row */}
               <div className="space-y-3">
                 <Label className={labelStyle}>
-                  <Stethoscope size={16} className="inline mr-2 text-[#3eb489]" />
+                  <Stethoscope size={16} className="inline mr-2 text-green-600" />
                   Provisional Diagnosis
                 </Label>
                 <Textarea 
@@ -192,12 +167,11 @@ export default function PrescriptionContent() {
               <div className="space-y-6 pt-6 border-t border-gray-100">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="text-xl font-bold text-black">Medications (Rx)</h3>
+                    <h3 className="text-xl font-bold text-gray-600">Medications (Rx)</h3>
                     <p className="text-sm text-gray-400">Add medicines, dosages, and duration</p>
                   </div>
                   <Button 
-                    variant="outline" 
-                    className="border-gray-300 hover:bg-gray-50" 
+                    className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 font-bold" 
                     onClick={handleAddMedication}
                   >
                     <Plus size={18} className="mr-2" /> Add Medicine
@@ -206,14 +180,14 @@ export default function PrescriptionContent() {
 
                 <div className="space-y-4">
                   {medications.length === 0 ? (
-                    <div className="text-center py-10 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                      <p className="text-gray-400">No medications added yet.</p>
+                    <div className="text-center py-10 bg-white rounded-xl border border-green-600">
+                      <p className="text-gray-600 font-medium">No medications added yet.</p>
                     </div>
                   ) : (
                     medications.map((med) => (
                       <div 
                         key={med.id} 
-                        className="grid grid-cols-12 gap-3 items-end bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative transition-all hover:shadow-md"
+                        className="grid grid-cols-12 gap-3 items-end bg-white p-4 rounded-xl border border-green-600 shadow-sm relative transition-all hover:shadow-md"
                       >
                         <div className="col-span-12 md:col-span-4">
                           <Label className="text-[10px] uppercase text-gray-400 mb-1">Medicine Name</Label>
@@ -252,7 +226,7 @@ export default function PrescriptionContent() {
                             variant="ghost" 
                             size="icon" 
                             onClick={() => setMedications(medications.filter(m => m.id !== med.id))} 
-                            className="text-gray-300 hover:text-red-500"
+                            className="text-gray-400 hover:text-red-500 hover:bg-red-50"
                           >
                             <Trash2 size={20} />
                           </Button>
@@ -263,10 +237,24 @@ export default function PrescriptionContent() {
                 </div>
               </div>
 
+              {/* NEXT VISIT / FOLLOW-UP DATE SECTION */}
+              <div className="pt-6 border-t border-gray-100">
+                <Label className={labelStyle}>
+                  <Calendar size={16} className="inline mr-2 text-green-600" />
+                  Next Visit / Follow-up Date
+                </Label>
+                <Input 
+                  type="date" 
+                  value={nextVisitDate} 
+                  onChange={(e) => setNextVisitDate(e.target.value)} 
+                  className={`w-full md:w-1/3 mt-2 ${inputStyle}`} 
+                />
+              </div>
+
               <div className="pt-8">
                 <Button 
                   onClick={() => setWorkflowStep('preview')} 
-                  className="w-full bg-blue-600 hover:bg-blue-700 h-14 text-xl font-bold shadow-lg shadow-blue-200"
+                  className="w-full bg-white border border-green-600 text-gray-600 hover:bg-green-50 h-14 text-xl font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
                 >
                   <FileText className="mr-2" /> Generate Prescription Preview
                 </Button>
@@ -281,29 +269,28 @@ export default function PrescriptionContent() {
         <div className="space-y-10 animate-in fade-in duration-700">
           
           {/* Action Toolbar */}
-          <div className="flex gap-4 no-print justify-center bg-white p-6 rounded-2xl border border-gray-100 shadow-xl">
+          <div className="flex gap-4 no-print justify-center bg-white p-6 rounded-2xl border border-green-600 shadow-sm">
             <Button 
               onClick={handleSaveToDatabase} 
               disabled={isSaving} 
-              className="bg-black text-white px-10 h-14 text-lg hover:bg-gray-800 shadow-xl"
+              className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 px-10 h-14 text-lg font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
               {isSaving ? <Loader2 className="mr-2 animate-spin" /> : <Printer className="mr-2" />}
               Save & Print Prescription
             </Button>
             <Button 
-              variant="outline" 
-              className="h-14 px-10 border-gray-300 text-lg" 
+              className="bg-white border border-green-600 text-gray-600 hover:bg-green-50 px-10 h-14 text-lg font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
               onClick={() => setWorkflowStep('consultation')}
             >
               <ArrowLeft className="mr-2" /> Back to Editor
             </Button>
           </div>
           
-          {/* --- A5 PRESCRIPTION CONTAINER --- */}
-          <div className="prescription-page bg-white mx-auto relative shadow-2xl">
+          {/* --- A5 PRESCRIPTION CONTAINER (FIXED MULTI-PAGE LAYOUT) --- */}
+          <div className="prescription-page bg-white mx-auto relative shadow-2xl border border-gray-200">
               
              {/* HEADER: Clinic, Doctor, Reg */}
-             <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
+             <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6 pt-4 px-4">
                 <div className="w-1/4">
                    <img 
                     src="/saisamarth.png" 
@@ -311,31 +298,30 @@ export default function PrescriptionContent() {
                     className="w-24 h-auto object-contain" 
                    />
                 </div>
-                <div className="w-1/2 text-center">
-                   <h1 className="text-3xl font-black text-black tracking-tighter leading-none uppercase">
+                <div className="w-1/2 text-center mt-2">
+                   <h1 className="text-xl text-black tracking-normal leading-none uppercase font-normal">
                     Sai Samarth Clinic
                    </h1>
-                   <p className="text-[10px] text-gray-500 font-bold mt-2">Healthcare Management System</p>
                 </div>
                 <div className="w-1/4 text-right text-[10px] leading-tight font-medium">
                    <p className="font-black text-black text-sm">Dr. Ajit Vispute</p>
-                   <p className="text-gray-700">B.A.M.S (MUHS, NASHIK)</p>
+                   <p className="text-gray-700">B.A.M.S (MUHS, NASHIK; AHERF,MUHS)</p>
                    <p className="text-gray-700 italic">RegdNo. I-50338-A</p>
                 </div>
              </div>
 
              {/* PATIENT DETAILS BAR */}
-             <div className="grid grid-cols-3 border-y border-gray-400 py-3 px-3 text-[12px] mb-8 bg-gray-50">
-                <div className="font-bold">ID: <span className="font-medium">{activePatient.id}</span></div>
+             <div className="grid grid-cols-3 border-y border-gray-400 py-3 px-4 mx-4 text-[12px] mb-8 bg-gray-50">
+                <div className="font-bold">Patient ID: <span className="font-medium">{activePatient.id}</span></div>
                 <div className="text-center font-bold">PATIENT: <span className="font-black uppercase">{activePatient.name}</span></div>
-                <div className="text-right font-bold">DATE: <span className="font-medium">{new Date().toLocaleDateString('en-GB')}</span></div>
+                <div className="text-right font-bold">DATE: <span className="font-medium">{new Date().toLocaleDateString('en-IN')}</span></div>
              </div>
 
              {/* MAIN BODY: 40% CLINICAL | 60% RX */}
-             <div className="flex gap-10 min-h-[130mm]">
+             <div className="flex px-4 min-h-[120mm] items-stretch">
                 
                 {/* LEFT 40% - Clinical Profile */}
-                <div className="w-[40%] border-r border-gray-100 pr-6 space-y-6">
+                <div className="w-[35%] border-r border-gray-100 pr-6 space-y-6">
                    
                    {/* Vitals Grid */}
                    <div className="space-y-3">
@@ -357,15 +343,30 @@ export default function PrescriptionContent() {
                         {diagnosis || "Provisional diagnosis pending."}
                       </p>
                    </div>
+
+                   {/* NEXT VISIT DATE */}
+                   {nextVisitDate && (
+                     <div className="space-y-2 pt-4">
+                        <h4 className="text-[10px] font-black uppercase text-gray-400 tracking-widest border-b border-gray-100 pb-1">Next Visit / Follow-up</h4>
+                        <p className="text-[13px] font-black text-black leading-tight">
+                          {new Date(nextVisitDate).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </p>
+                     </div>
+                   )}
                 </div>
 
-                {/* RIGHT 60% - Medications List */}
-                <div className="w-[60%] relative">
+                {/* RIGHT 60% - Medications List & Signature */}
+                <div className="w-[65%] pl-6 flex flex-col">
                    <div className="text-4xl font-serif italic mb-6 text-gray-200">Rx</div>
                    
-                   <div className="space-y-6">
+                   {/* flex-1 pushes the signature down automatically! */}
+                   <div className="space-y-6 flex-1">
                       {medications.length > 0 ? medications.map((m, i) => (
-                        <div key={i} className="border-b border-gray-50 pb-3 last:border-0">
+                        <div key={i} className="border-b border-gray-50 pb-3 last:border-0 break-inside-avoid">
                            <div className="flex justify-between items-baseline mb-1">
                               <p className="text-[15px] font-black text-black">
                                 {i + 1}. {m.medicineName.toUpperCase()}
@@ -383,9 +384,9 @@ export default function PrescriptionContent() {
                       )}
                    </div>
 
-                   {/* Signature Section - Bottom Right */}
-                   <div className="absolute bottom-10 right-0 text-right">
-                      <div className="h-20 w-40 border-b-2 border-dotted border-gray-300 ml-auto mb-2 opacity-30"></div>
+                   {/* Signature Section - Sits naturally at the end of the Rx column */}
+                   <div className="text-right mt-16 mb-4 break-inside-avoid">
+                      <div className="h-16 w-40 border-b-2 border-dotted border-gray-300 ml-auto mb-2 opacity-30"></div>
                       <p className="text-[12px] font-black text-black uppercase tracking-tight underline underline-offset-4 decoration-gray-200">
                         Dr. Ajit Vispute
                       </p>
@@ -394,19 +395,21 @@ export default function PrescriptionContent() {
                 </div>
              </div>
 
-             {/* FOOTER SECTION */}
-             <div className="absolute bottom-6 left-6 right-6 pt-3 border-t-2 border-black flex justify-between items-center text-[10px] text-gray-700 font-bold">
-                <div className="flex gap-6">
-                   <p className="uppercase">
-                    <span className="text-gray-400">Add:</span> Shop No.8, Praide Monarch Park, Nashik
-                   </p>
-                   <p>
-                    <span className="text-gray-400 font-bold">Phone:</span> 0253-2454646
-                   </p>
-                </div>
-                <div className="text-right text-[8px] opacity-20 uppercase tracking-widest font-black">
-                   System v2.6.0
-                </div>
+             {/* FOOTER SECTION - Physically placed at the bottom, outside the flex columns */}
+             <div className="w-full px-4 pb-6 pt-4 break-inside-avoid">
+               <div className="border-t-2 border-black pt-3 flex justify-between items-center text-[10px] text-gray-700 font-bold">
+                  <div className="flex gap-6">
+                     <p className="uppercase">
+                      <span className="text-gray-400">Add:</span> Shop No.8, Praide Monarch Park, Nashik
+                     </p>
+                     <p>
+                      <span className="text-gray-400 font-bold">Phone:</span> 0253-2454646
+                     </p>
+                  </div>
+                  <div className="text-right text-[8px] opacity-20 uppercase tracking-widest font-black">
+                     System v2.6.0
+                  </div>
+               </div>
              </div>
 
           </div>
@@ -419,7 +422,7 @@ export default function PrescriptionContent() {
           .prescription-page {
             width: 148mm;
             min-height: 210mm;
-            padding: 15mm;
+            padding: 0 !important;
             border: 1px solid #f3f4f6;
             background-color: #ffffff;
             border-radius: 8px;
@@ -427,16 +430,21 @@ export default function PrescriptionContent() {
         }
 
         @media print {
-          /* Force A5 orientation and clear margins */
           @page { 
             size: A5 portrait; 
             margin: 0; 
           }
           
-          /* Hide everything except the prescription container */
+          /* 🚨 MAGIC FIX: Unlock scrollable containers in your Dashboard so they don't break multi-page printing 🚨 */
+          html, body, #root, main, div.overflow-auto, div.h-screen {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: visible !important;
+            position: static !important;
+          }
+          
           body * { 
             visibility: hidden; 
-            overflow: hidden;
           }
           
           .prescription-page, .prescription-page * { 
@@ -444,12 +452,12 @@ export default function PrescriptionContent() {
           }
           
           .prescription-page { 
-            position: fixed;
+            position: absolute;
             left: 0;
             top: 0;
             width: 148mm;
-            height: 210mm;
-            padding: 10mm !important;
+            height: auto !important; /* ALLOWS INFINITE SCROLLING IN PRINT */
+            padding: 0 !important;
             box-shadow: none !important;
             border: none !important;
             margin: 0 !important;
@@ -458,12 +466,16 @@ export default function PrescriptionContent() {
             print-color-adjust: exact;
           }
 
-          /* Hide UI elements like buttons and search bars */
+          /* Force page breaks to happen cleanly */
+          .break-inside-avoid {
+             break-inside: avoid;
+             page-break-inside: avoid;
+          }
+
           .no-print { 
             display: none !important; 
           }
 
-          /* Ensure high contrast for medical reading */
           h1, h2, h3, p, span {
             color: black !important;
           }
