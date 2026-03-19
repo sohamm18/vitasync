@@ -20,6 +20,7 @@ import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import { Textarea } from './components/ui/textarea';
 import { useAppContext } from './context/AppContext';
+import { visitService, prescriptionService } from '../services/api';
 
 // --- Types & Interfaces ---
 
@@ -38,9 +39,7 @@ type WorkflowStep = 'patient-selection' | 'consultation' | 'preview';
 export default function PrescriptionContent() {
   // 1. Context & Global State
   const { 
-    doctorProfile, 
     activePatient, 
-    setActivePatient, 
     prescriptionData 
   } = useAppContext();
 
@@ -70,30 +69,47 @@ export default function PrescriptionContent() {
   // --- Logic Handlers ---
 
   const handleSaveToDatabase = async () => {
+    if (!activePatient) {
+      alert('Please select a patient before saving.');
+      return;
+    }
+
     setIsSaving(true);
-    
-    const prescriptionSaveData = {
-      patient_id: activePatient?.id,
-      doctor_id: doctorProfile.employeeId,
-      diagnosis: diagnosis,
-      meds: medications,
-      next_visit_date: nextVisitDate,
-      date: new Date().toISOString().split('T')[0]
-    };
 
     try {
-      const response = await fetch('http://localhost/vitasync/api/save_prescription.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prescriptionSaveData)
+      const visitPayload = {
+        patient_id: activePatient.id,
+        visit_date: new Date().toISOString().split('T')[0],
+        vitals: {
+          bp: prescriptionData?.bp || null,
+          hr: prescriptionData?.hr || null,
+          weight: activePatient.weight || null,
+          temp: prescriptionData?.temp || null,
+          spo2: prescriptionData?.spo2 || null,
+          bsl: prescriptionData?.bsl || null,
+        },
+        diagnosis: diagnosis || null,
+        notes: null,
+        followup_date: nextVisitDate || null,
+      };
+
+      const visitResponse = await visitService.createVisit(visitPayload);
+      const visitId = visitResponse.data?.id;
+
+      if (!visitId) {
+        throw new Error('Visit creation failed.');
+      }
+
+      await prescriptionService.createPrescription({
+        visit_id: visitId,
+        medicines: medications,
+        instructions: null,
+        language: 'en',
+        version: 1,
       });
 
-      if (response.ok) {
-        window.print();
-        alert("Prescription saved and sent to printer.");
-      } else {
-        throw new Error("Server responded with an error.");
-      }
+      window.print();
+      alert("Prescription saved and sent to printer.");
     } catch (error) {
       console.error("Save failed:", error);
       alert("Database connection failed. Printing local copy only.");

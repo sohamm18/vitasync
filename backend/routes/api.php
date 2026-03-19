@@ -14,6 +14,7 @@ Route::delete('/report-images/{id}', [ReportImageController::class, 'destroy']);
 
 // ✅ Certificates
 Route::post('/certificates', [CertificateController::class, 'store']);
+Route::post('/certificates/upload-pdf', [CertificateController::class, 'uploadPdf']);
 Route::get('/certificates/visit/{id}', [CertificateController::class, 'visitCertificates']);
 
 // ✅ Prescriptions

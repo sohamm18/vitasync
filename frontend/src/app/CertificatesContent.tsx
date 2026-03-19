@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Award, Activity, MapPin, Phone, Mail } from 'lucide-react';
-// 👇 Fixed imports to relative paths
+import { Award } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
@@ -19,6 +18,9 @@ export default function CertificatesContent() {
   const [examDate, setExamDate] = useState(new Date().toISOString().split('T')[0]);
   const [findings, setFindings] = useState('');
   const [recommendation, setRecommendation] = useState('');
+  const [bedrestDays, setBedrestDays] = useState('');
+  const [isolationDetails, setIsolationDetails] = useState('');
+  const [noHistoryNotes, setNoHistoryNotes] = useState('');
   const [validUntil, setValidUntil] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
@@ -38,6 +40,14 @@ export default function CertificatesContent() {
   const handlePrint = () => {
     window.print();
   };
+
+  const formattedExamDate = examDate
+    ? new Date(examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+    : '';
+  const formattedIssueDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const formattedValidUntil = validUntil
+    ? new Date(validUntil).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+    : '';
 
   // Shared generic input style
   const inputStyle = "bg-white border border-green-600 text-gray-600 focus-visible:ring-1 focus-visible:ring-green-600 focus-visible:ring-offset-0 focus:outline-none placeholder:text-gray-400";
@@ -167,6 +177,39 @@ export default function CertificatesContent() {
                       />
                     </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="bedrestDays" className="text-gray-600">Bedrest Days (approx)</Label>
+                        <Input
+                          id="bedrestDays"
+                          placeholder="e.g., 5"
+                          value={bedrestDays}
+                          onChange={(e: any) => setBedrestDays(e.target.value)}
+                          className={inputStyle}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="isolationDetails" className="text-gray-600">Isolation / Investigations / Hospitalization</Label>
+                        <Input
+                          id="isolationDetails"
+                          placeholder="e.g., Xray, USG, Scan, Surgery"
+                          value={isolationDetails}
+                          onChange={(e: any) => setIsolationDetails(e.target.value)}
+                          className={inputStyle}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="noHistoryNotes" className="text-gray-600">No Major History / Allergy Notes</Label>
+                      <Input
+                        id="noHistoryNotes"
+                        placeholder="Optional notes"
+                        value={noHistoryNotes}
+                        onChange={(e: any) => setNoHistoryNotes(e.target.value)}
+                        className={inputStyle}
+                      />
+                    </div>
+
                     {certificateType === 'fitness' ? (
                       <>
                         <div className="space-y-2">
@@ -245,6 +288,9 @@ export default function CertificatesContent() {
                       setPurpose('');
                       setFindings('');
                       setRecommendation('');
+                      setBedrestDays('');
+                      setIsolationDetails('');
+                      setNoHistoryNotes('');
                       setValidUntil('');
                     }}
                   >
@@ -281,6 +327,9 @@ export default function CertificatesContent() {
                 setPurpose('');
                 setFindings('');
                 setRecommendation('');
+                setBedrestDays('');
+                setIsolationDetails('');
+                setNoHistoryNotes('');
                 setValidUntil('');
               }}
             >
@@ -292,122 +341,104 @@ export default function CertificatesContent() {
           <div className="certificate-container">
             <div className="certificate-page bg-white" id="certificate-preview">
               {/* Certificate Header */}
-              <div className="text-center border-b-2 border-gray-300 pb-4 mb-6">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 border border-gray-200">
-                  <Activity className="w-8 h-8 text-gray-600" />
+              <div className="border-b-2 border-black pb-3 mb-4">
+                <div className="flex justify-between items-start">
+                  <div className="w-1/4">
+                    <img
+                      src="/saisamarthlogo.png"
+                      alt="Clinic Logo"
+                      className="w-16 h-auto object-contain"
+                    />
+                  </div>
+                  <div className="w-1/2 text-center text-[10px] leading-tight">
+                    <p className="text-[12px] font-semibold uppercase">{doctorProfile.clinicName}</p>
+                    <p>{doctorProfile.clinicAddress}, {doctorProfile.clinicCity}</p>
+                    <p>{doctorProfile.clinicState} - {doctorProfile.clinicZip}</p>
+                  </div>
+                  <div className="w-1/4 text-right text-[10px] leading-tight">
+                    <p className="text-[12px] font-bold">{doctorProfile.firstName} {doctorProfile.lastName}</p>
+                    <p>{doctorProfile.designation}</p>
+                    <p>Reg. No: {doctorProfile.registrationNumber}</p>
+                  </div>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">{doctorProfile.firstName} {doctorProfile.lastName}</h1>
-                <p className="text-sm text-gray-600">{doctorProfile.designation}</p>
-                <p className="text-xs text-gray-500 mt-1">Reg. No: {doctorProfile.registrationNumber}</p>
               </div>
 
               {/* Certificate Title */}
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-2 whitespace-pre-line">
-                  {certificateType === 'fitness' ? 'चिकित्सा स्वास्थ्य प्रमाणपत्र\nMEDICAL FITNESS CERTIFICATE' : 'चिकित्सा अयोग्यता प्रमाणपत्र\nMEDICAL UNFITNESS CERTIFICATE'}
-                </h2>
-                <p className="text-xs text-gray-600">Certificate No: CERT-{new Date().getTime()}</p>
-                <p className="text-xs text-gray-600">Date: {new Date(examDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              <div className="text-center mb-4">
+                <p className="text-[12px] font-bold underline underline-offset-4 tracking-wide">
+                  FITNESS / UNFITNESS CERTIFICATE
+                </p>
               </div>
 
               {/* Certificate Body */}
-              <div className="space-y-4 text-gray-800 text-sm leading-relaxed">
-                <p>This is to certify that I have thoroughly examined:</p>
-                
-                <div className="bg-gray-50 p-3 rounded-lg text-sm">
-                  <p><strong>Name (नाम):</strong> {patientName}</p>
-                  <p><strong>Age (आयु):</strong> {age} years</p>
-                  <p><strong>Gender (लिंग):</strong> {gender === 'male' ? 'Male' : 'Female'}</p>
-                  {purpose && <p><strong>Purpose (उद्देश्य):</strong> {purpose}</p>}
-                </div>
+              <div className="space-y-3 text-[11px] text-gray-900 leading-relaxed">
+                <p>
+                  Here with it is to certify that{' '}
+                  <span className="inline-block min-w-[60px] border-b border-black text-center px-1">{age || ' '}</span>{' '}
+                  yrs{' '}
+                  <span className="inline-block min-w-[160px] border-b border-black text-center px-1">
+                    {patientName || ' '}
+                  </span>{' '}
+                  {gender === 'male' ? 'M' : 'F'} is/was under my therapy since / Checked by me{' '}
+                  <span className="inline-block min-w-[80px] border-b border-black text-center px-1">
+                    {formattedExamDate || ' '}
+                  </span>{' '}
+                  for / due to{' '}
+                  <span className="inline-block min-w-[160px] border-b border-black text-center px-1">
+                    {findings || ' '}
+                  </span>
+                </p>
 
-                {certificateType === 'fitness' ? (
-                  <>
-                    <p>
-                      After thorough clinical examination on {new Date(examDate).toLocaleDateString('en-IN')}, I hereby certify that {pronoun} is medically FIT and in good health{findings && `. ${findings}`}
-                    </p>
-                    <p>
-                      {pronounCap} is fit to {purpose ? purpose.toLowerCase() : 'undertake normal activities'} and there are no medical contraindications or abnormalities observed during the physical examination.
-                    </p>
-                    {validUntil && (
-                      <p className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
-                        <strong>Valid Until:</strong> {new Date(validUntil).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      After thorough clinical examination on {new Date(examDate).toLocaleDateString('en-IN')}, I hereby certify that {pronoun} is currently medically UNFIT.
-                    </p>
-                    {findings && (
-                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
-                        <p><strong>Medical Findings (चिकित्सा निष्कर्ष):</strong></p>
-                        <p className="mt-1">{findings}</p>
-                      </div>
-                    )}
-                    {recommendation && (
-                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm">
-                        <p><strong>Medical Advice (चिकित्सा सलाह):</strong></p>
-                        <p className="mt-1">{recommendation}</p>
-                      </div>
-                    )}
-                    <p>
-                      {pronounCap} is advised to refrain from {purpose ? purpose.toLowerCase() : 'strenuous activities'} until {pronoun} receives proper medical clearance and treatment.
-                    </p>
-                    {validUntil && (
-                      <p className="font-semibold">
-                        <strong>Unfit Until:</strong> {new Date(validUntil).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
-                      </p>
-                    )}
-                  </>
-                )}
+                <p>
+                  {pronounCap} is / was advised a bedrest & medication for approx{' '}
+                  <span className="inline-block min-w-[60px] border-b border-black text-center px-1">
+                    {bedrestDays || ' '}
+                  </span>{' '}
+                  days or till {possessive} recovery along with an isolation/ Lab investigations / Xray / USG / Scan / Surgery / Hospitalization{' '}
+                  <span className="inline-block min-w-[120px] border-b border-black text-center px-1">
+                    {isolationDetails || ' '}
+                  </span>
+                </p>
+
+                <p>
+                  There is no P/H/O any major physical or psychological disease / disorder / allergy of any drug{' '}
+                  <span className="inline-block min-w-[160px] border-b border-black text-center px-1">
+                    {noHistoryNotes || ' '}
+                  </span>
+                </p>
+
+                <p>
+                  {pronounCap} is well oriented & Conscious. And all {possessive} motor activities / reflexes / Sensory organs are normal / abnormal
+                </p>
+
+                <p>
+                  I found {object} to be{' '}
+                  <span className="font-bold">{certificateType === 'fitness' ? 'FIT' : 'UNFIT'}</span>{' '}
+                  on{' '}
+                  <span className="inline-block min-w-[80px] border-b border-black text-center px-1">
+                    {formattedValidUntil || ' '}
+                  </span>{' '}
+                  to resume {possessive} duties / works / studies / to travel / to participate in Physical / Mental activities / Extend the leave w.e.f. 
+                  <span className="inline-block min-w-[80px] border-b border-black text-center px-1">
+                    {formattedValidUntil || ' '}
+                  </span>
+                </p>
+
+                <p>
+                  with appropriate care / dressing / physiotherapy / medication / immobilisation
+                </p>
               </div>
 
-              {/* Signature Section */}
-              <div className="mt-8 pt-4 border-t border-gray-300">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-xs text-gray-600">Date of Issue:</p>
-                    <p className="text-sm font-semibold">{new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="border-t-2 border-gray-400 pt-2 w-40">
-                      <p className="text-sm font-semibold">{doctorProfile.firstName} {doctorProfile.lastName}</p>
-                      <p className="text-xs text-gray-600">{doctorProfile.designation}</p>
-                      <p className="text-xs text-gray-600">Reg: {doctorProfile.registrationNumber}</p>
-                    </div>
-                  </div>
-                </div>
+              {/* Place and Date */}
+              <div className="mt-6 text-[11px]">
+                <p>Place : {doctorProfile.clinicCity || ' '}</p>
+                <p>Date : {formattedIssueDate}</p>
               </div>
 
-              {/* Footer with Clinic Details */}
-              <div className="certificate-footer">
-                <div className="border-t-2 border-gray-400 pt-3">
-                  <div className="text-center">
-                    <h3 className="text-sm font-bold text-gray-800 mb-2">{doctorProfile.clinicName}</h3>
-                    <div className="text-xs text-gray-600 space-y-1">
-                      <p className="flex items-center justify-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {doctorProfile.clinicAddress}, {doctorProfile.clinicCity}, {doctorProfile.clinicState} - {doctorProfile.clinicZip}
-                      </p>
-                      <div className="flex items-center justify-center gap-4">
-                        <p className="flex items-center gap-1">
-                          <Phone className="w-3 h-3" />
-                          Mobile: {doctorProfile.mobile}
-                        </p>
-                        <p className="flex items-center gap-1">
-                          <Phone className="w-3 h-3" />
-                          Landline: {doctorProfile.landline}
-                        </p>
-                      </div>
-                      <p className="flex items-center justify-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {doctorProfile.email}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              {/* Footer Disclaimer */}
+              <div className="mt-6 text-center text-[9px] text-gray-600 leading-tight">
+                <p>(This Certificate is issued on demand of patient & on documents/identity proofs</p>
+                <p>submitted by patient. It is not for medico legal purpose.)</p>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('visit_id')->constrained()->onDelete('cascade');
             // The public URL for React to display the image
             $table->string('file_url');
-            // The absolute path on your F: drive for internal management
+            // Relative path within storage/app/public for internal management
             $table->string('file_path'); 
             $table->string('file_type')->nullable(); // e.g., 'pdf', 'jpg'
             $table->timestamps();

@@ -13,7 +13,12 @@ class Certificate extends Model
         'visit_id',
         'type',
         'content',
-        'version'
+        'version',
+        'file_url',
+        'file_path',
+        'file_type',
+        'file_name',
+        'file_size'
     ];
 
     // Keep the array cast if you are sending structured JSON content from React

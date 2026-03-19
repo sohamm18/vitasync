@@ -19,6 +19,16 @@ export const patientService = {
     createPatient: (data: any) => api.post('/patients', data),
 };
 
+export const visitService = {
+    createVisit: (data: any) => api.post('/visits', data),
+    getPatientVisits: (patientId: number | string) => api.get(`/visits/patient/${patientId}`),
+};
+
+export const prescriptionService = {
+    createPrescription: (data: any) => api.post('/prescriptions', data),
+    getVisitPrescriptions: (visitId: number | string) => api.get(`/prescriptions/visit/${visitId}`),
+};
+
 export const reportService = {
     /**
      * Upload report image to local storage folder:
@@ -29,7 +39,7 @@ export const reportService = {
         formData.append('visit_id', String(visitId));
         formData.append('file', file);
         
-        return api.post('/reports/upload', formData, {
+        return api.post('/report-images', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
